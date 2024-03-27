@@ -6,6 +6,27 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'talendig_db',
+});
+
+connection.connect();
+
+
+connection.query('SELECT * FROM users', function(error, results, fields){
+  if(error){
+    throw error;
+  }
+
+  console.log('The solution is: ', results[0])
+  console.log('fields: ', fields)
+});
+
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
