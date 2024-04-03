@@ -1,5 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var mysql = require('mysql');
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('asdf56as1df65asd1651a6s1df6');
+
+
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'talendig_db',
+});
+
+connection.connect();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -8,8 +21,41 @@ router.get('/', function(req, res, next) {
 
 router.post('/create', function(req, res, next){
   try{
-    console.log('req.body', req.body)
-    const user_role = 'development';
+    //console.log('req.body', req.body)
+
+    if(req.body.username && req.body.email && req.body.password && req.body.country){
+      const username = req.body?.username;
+      const email = req.body?.email;
+      const password = cryptr.encrypt(req.body?.password);
+      const country = req.body?.country;
+      const state = req.body?.state === 'on' ? 1 : 0;
+
+      // INSERT INTO users (username, email, password, country, state) VALUES ("jhonmart", "test3@test.test", "123456789", "on", "República Dominicana")
+
+      const user_exists = connection.query(`SELECT * FROM users WHERE username="${username}" OR email="${email}" LIMIT 1;`, 
+        function(error, results, fields){
+          console.log('The solution is: ', results[0])
+          console.log('results.length: ', results.length)
+
+          if(!results.length){
+            
+            connection.query(`INSERT INTO users (username, email, password, country, status) VALUES ("${username}", "${email}", "${password}", "${country}", "${state}")`, 
+              function(err, res, field){
+                if(err){
+                  throw err;
+                }
+              
+                console.log('The solution is: ', res[0])
+                // console.log('fields: ', fields)
+              });
+          }
+          
+      });
+
+      
+    }
+
+    
 
     // - numérico (tynyint, smallint, mediumint, int, bigint) = 52,416
     // - date = fecha

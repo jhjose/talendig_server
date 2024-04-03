@@ -1,0 +1,4 @@
+// Lenguaje de Programación: Javascript, PHP, C#, Java, C++ y C
+// Lenguaje de Etiquetas: HTML, XML, etc.
+// Lenguaje en cascada: CSS, SCSS, etc.
+// Lenguaje de consulta: SQL
