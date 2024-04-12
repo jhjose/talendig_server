@@ -1,20 +1,31 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql');
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr('asdf56as1df65asd1651a6s1df6');
+const userController = require('../controller/UserController');
 
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'talendig_db',
-});
-
-connection.connect();
+const user_role = 'development';
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+
+  // GET ALL COOKIES WITHOUT AUTH
+  console.log('Cookies: ', req.cookies);
+
+  // GET ALL COOKIES WITH AUTH
+  console.log('Signed Cookies: ', req.signedCookies);
+
+  // CREATE A COOKIE
+  res.cookie('user_id', 56, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 4,
+    secure: true
+  });
+
+  // GET A SPECIFIC COOKIE
+  //req.cookies.user_id
+
+  // DELETE A COOKIE
+  //res.clearCookie('user_id', {httpOnly: true, secure: true});
+
   res.send('respond with a resource');
 });
 
@@ -23,14 +34,21 @@ router.post('/create', function(req, res, next){
     //console.log('req.body', req.body)
 
     if(req.body.username && req.body.email && req.body.password && req.body.country){
-      const username = req.body?.username;
-      const email = req.body?.email;
-      const password = cryptr.encrypt(req.body?.password);
-      const country = req.body?.country;
-      const state = req.body?.state === 'on' ? 1 : 0;
+      const data = {
+        username: req.body?.username,
+        email: req.body?.email,
+        password: req.body?.password,
+        country: req.body?.country,
+        state: req.body?.state === 'on' ? 1 : 0,
+      }
 
-      // INSERT INTO users (username, email, password, country, state) VALUES ("jhonmart", "test3@test.test", "123456789", "on", "República Dominicana")
+      const user = userController.getUserByUsernameEmail(data.username, data.email);
+      
+      console.log('user', user);
+      //const password = cryptr.encrypt(req.body?.password);
+      
 
+/*
       const user_exists = connection.query(`SELECT * FROM users WHERE username="${username}" OR email="${email}" LIMIT 1;`, 
         function(error, results, fields){
           console.log('The solution is: ', results[0])
@@ -51,9 +69,9 @@ router.post('/create', function(req, res, next){
           
       });
 
-    }
+      */
 
-    
+    }
 
     // - numérico (tynyint, smallint, mediumint, int, bigint) = 52,416
     // - date = fecha
