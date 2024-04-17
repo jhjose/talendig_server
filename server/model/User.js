@@ -1,30 +1,38 @@
-const db = require('../controller/DatabaseController');
+const connection = require('../controller/DatabaseController');
 
-const getUserByUsernameEmail = async (username, email)=>{
+let user;
+
+const getUserByUsernameEmail = (username, email)=>{
     try{
-
-        db.connect();
-
-        console.log(db.query)
-
-        const user_exists = db.query(`SELECT * FROM users WHERE username="${username}" OR email="${email}" LIMIT 1;`, function(err, res, field){
+        const user_exists = connection.query(`SELECT * FROM users WHERE username="${username}" OR email="${email}" LIMIT 1;`, [user], function(err, res, field){
             if(err){
               throw err;
             }
-          
-            console.log('The solution is: ', res[0])
-
-            return res[0];
-            // console.log('fields: ', fields)
+           
+            user = res[0];
         });
+
+        return user;
         
     }catch(e){
         console.log('e', e)
     }
 }
 
+const create = (data)=>{
+    connection.query(`INSERT INTO users (username, email, password, country, status) VALUES ("${data.username}", "${data.email}", "${data.password}", 
+        "${data.country}", "${data.state}")`, 
+        function(err, res, field){
+            if(err){
+                return 1
+            }
+            
+            return 0
+        });
+}
+
 module.exports = {
-    getUserByUsernameEmail,
+    getUserByUsernameEmail, create,
 }
 
 /*module.exports = (sequelize, typeOf) => {

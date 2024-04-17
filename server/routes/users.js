@@ -34,42 +34,32 @@ router.post('/create', function(req, res, next){
     //console.log('req.body', req.body)
 
     if(req.body.username && req.body.email && req.body.password && req.body.country){
+      const password = cryptr.encrypt(req.body.password);
+
       const data = {
         username: req.body?.username,
         email: req.body?.email,
-        password: req.body?.password,
+        password: password,
         country: req.body?.country,
         state: req.body?.state === 'on' ? 1 : 0,
       }
 
-      const user = userController.getUserByUsernameEmail(data.username, data.email);
+      const user_exists = userController.getUserByUsernameEmail(data.username, data.email);
+
+      console.log('user_exists', user_exists)
       
-      console.log('user', user);
-      //const password = cryptr.encrypt(req.body?.password);
+      if(user_exists){
+        return res.json({
+          'error': false,
+          'user_exists': true,
+          'message': 'Existe un usuario con estas credenciales.',
+        });
+      }
+
+      const user_new = userController.create(data);
+
+      console.log('user_new', user_new);
       
-
-/*
-      const user_exists = connection.query(`SELECT * FROM users WHERE username="${username}" OR email="${email}" LIMIT 1;`, 
-        function(error, results, fields){
-          console.log('The solution is: ', results[0])
-          console.log('results.length: ', results.length)
-
-          if(!results.length){
-            
-            connection.query(`INSERT INTO users (username, email, password, country, status) VALUES ("${username}", "${email}", "${password}", "${country}", "${state}")`, 
-              function(err, res, field){
-                if(err){
-                  throw err;
-                }
-              
-                console.log('The solution is: ', res[0])
-                // console.log('fields: ', fields)
-              });
-          }
-          
-      });
-
-      */
 
     }
 
@@ -86,10 +76,7 @@ router.post('/create', function(req, res, next){
     // - double
 
 
-    return res.json({
-      'error': false,
-      'message': 'El usuario ha sido creado correctamente'
-    });
+    
 
   }catch(e){
     return res.status(500).json({

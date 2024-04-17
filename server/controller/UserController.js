@@ -1,27 +1,22 @@
 const userModel = require('../model/User');
 
-const getUserByUsernameEmail = async (username, email)=>{
-    const user = await userModel.getUserByUsernameEmail(username, email);
-    console.log('user', user)
-    /*
-        user.then((err, res, field)=>{
-            if(err){
-                throw err;
-            }
-            
-            console.log('The solution is: ', res[0])
-        });
+const getUserByUsernameEmail = (username, email)=>{
+    const user = userModel.getUserByUsernameEmail(username, email);
 
     return user;
-    */
 }
 
-const create = async (req = request, res = response)=>{
-    
+const createUser = (data)=>{
+    const new_user = userModel.create(data);
+
+    if(new_user){
+
+    }
+    console.log('new_user', new_user)
 }
 
 module.exports = {
-    getUserByUsernameEmail,
+    getUserByUsernameEmail, createUser,
 }
 
 /*
