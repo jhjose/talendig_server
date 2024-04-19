@@ -1,44 +1,25 @@
 const Message = require('../model/mongodb_services/message.model');
 
-const get = async (_req, res)=>{
-    const messages = await Message.find({status: 1}, function(err, docs){
-        console.log('Error detectado en el modelo: ', err)
-        
-        if(err){
-            console.log('Error detectado en el modelo: ', err)
-        }else{
-            console.log('Docs Result: ', docs);
-        }
-
-    });
-
-    res.send(messages);
+const get = async ()=>{
+    return await Message.find({status: 1});
 }
 
 const getById = async (_req, res)=>{
-    const message = await Message.findOne(req.params.id);
-
-    res.send(message);
+    return await Message.findById({_id: _req.params.id});
 }
 
-const create = async (req, res)=>{
-    const new_message = await Message.create(req.body);
-
-    res.send(new_message);
+const create = async (body)=>{
+    return await Message.create(body);
+}
+ 
+const update = async (id, body)=>{
+    return await Message.findOneAndUpdate({_id: id}, body);
 }
 
-const update = async (req, res)=>{
-    const message_updated = await Message.findOneAndUpdate(req.params.id, req.body);
+const destroy = async (id)=>{
+    await Message.deleteOne({_id: id});
 
-    res.send(message_updated);
+    return id;
 }
 
-const deleteMessage = async (req, res)=>{
-    const message_id = req.params.id;
-
-    await Message.findByIdAndRemove(message_id);
-
-    res.send(`Message has been eliminated with ID: ${message_id}`);
-}
-
-module.exports = {get, create, update, deleteMessage, getById}
+module.exports = {get, create, update, destroy, getById}

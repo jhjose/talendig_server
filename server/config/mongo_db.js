@@ -11,10 +11,14 @@ const db = async ()=>{
     try{
         const con = await mongoose.connect(MONGO_URL);
 
-        console.log(`MongoDB Connected: ${con.connection.host}`)
+        console.log(`MongoDB Connected Host: ${con.connection.host}`)
+        console.log(`MongoDB Connected Port: ${con.connection.port}`)
+        console.log('Connected to database: ', con.connection.name)
     }catch(e){
         console.log('Error: ', e);
     }
 }
+
+db();
 
 module.exports = db;
