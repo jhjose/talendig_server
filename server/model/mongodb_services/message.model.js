@@ -7,7 +7,7 @@ const MessageSchema = new mongoose.Schema({
     },
     status: {
         require: false,
-        type: Number
+        type: Boolean
     }
 });
 

@@ -1,3 +1,15 @@
+// - numérico (tynyint, smallint, mediumint, int, bigint) = 52,416
+// - date = fecha
+// - datetime = fecha y hora
+// - timestamp = YYYY-MM-DD HH:MM:SS
+// - time = HH:MM:SS
+// - year = YYYY
+// - char = cadena longitud máxima 255. Siempre reservará espacio para la longitud definida aunque no se utilize
+// - varchar = cadena logitud máxima 255. No reserva el espacio de la longitud máxima definida
+// - float
+// - decimal = 52.69
+// - double
+
 var express = require('express');
 var router = express.Router();
 const userController = require('../controller/UserController');
@@ -41,8 +53,10 @@ router.post('/create', function(req, res, next){
         email: req.body?.email,
         password: password,
         country: req.body?.country,
-        state: req.body?.state === 'on' ? 1 : 0,
+        state: 1,
       }
+
+      console.log('data', data)
 
       const user_exists = userController.getUserByUsernameEmail(data.username, data.email);
 
@@ -56,27 +70,17 @@ router.post('/create', function(req, res, next){
         });
       }
 
-      const user_new = userController.create(data);
+      const new_user = userController.createUser(data);
 
-      console.log('user_new', user_new);
-      
+      console.log('new_user', new_user);
 
+      return res.json({
+        'error': 0,
+        'user_exists': false,
+        'message': 'Usuario creado correctamente',
+        'new_user': new_user
+      })
     }
-
-    // - numérico (tynyint, smallint, mediumint, int, bigint) = 52,416
-    // - date = fecha
-    // - datetime = fecha y hora
-    // - timestamp = YYYY-MM-DD HH:MM:SS
-    // - time = HH:MM:SS
-    // - year = YYYY
-    // - char = cadena longitud máxima 255. Siempre reservará espacio para la longitud definida aunque no se utilize
-    // - varchar = cadena logitud máxima 255. No reserva el espacio de la longitud máxima definida
-    // - float
-    // - decimal = 52.69
-    // - double
-
-
-    
 
   }catch(e){
     return res.status(500).json({

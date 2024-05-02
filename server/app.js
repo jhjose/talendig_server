@@ -14,7 +14,7 @@ var usersRouter = require('./routes/users');
 var messageRouter = require('./routes/message');
 
 var corsOptions = {
-  origin: 'http://127.0.0.1:5500',
+  origin: ['http://127.0.0.1:5500', 'http://localhost:3000'],
   optionsSuccessStatus: 200,
 }
 

@@ -9,10 +9,9 @@ const getUserByUsernameEmail = (username, email)=>{
 const createUser = (data)=>{
     const new_user = userModel.create(data);
 
-    if(new_user){
-
-    }
     console.log('new_user', new_user)
+
+    return new_user;
 }
 
 module.exports = {
