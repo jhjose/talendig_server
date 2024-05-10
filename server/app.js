@@ -12,6 +12,7 @@ db();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var messageRouter = require('./routes/message');
+var productsRouter = require('./routes/products');
 
 var corsOptions = {
   origin: ['http://127.0.0.1:5500', 'http://localhost:3000'],
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/message', messageRouter);
+app.use('/products', productsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

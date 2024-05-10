@@ -11,7 +11,11 @@
 // - double
 
 var express = require('express');
-var router = express.Router();
+//const Cryptr = require('cryptr');
+//const cryptr = new Cryptr('asdf56as1df65asd1651a6s1df6');
+var CryptoJS = require("crypto-js");
+
+let router = express.Router();
 const userController = require('../controller/UserController');
 
 const user_role = 'development';
@@ -41,12 +45,33 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+router.post('/login', function(req, res){
+  try{
+    if(req.body.email && req.body.password){
+
+      return userController.login(req, res);
+      
+    }else{
+      return res.status(400).json({
+        'error': false,
+        'message': 'Todos los campos son requeridos, favor completar y enviar nuevamente.'
+      });
+    }
+  }catch(e){
+    console.log('e',e)
+    return res.status(500).json({
+      'error': true,
+      'message': user_role === 'development' ? e : 'Ha ocurrido un error.'
+    });
+  }
+});
+
 router.post('/create', function(req, res, next){
   try{
     //console.log('req.body', req.body)
 
     if(req.body.username && req.body.email && req.body.password && req.body.country){
-      const password = cryptr.encrypt(req.body.password);
+      const password = CryptoJS.AES.encrypt(req.body.password, '123456');
 
       const data = {
         username: req.body?.username,
@@ -55,12 +80,8 @@ router.post('/create', function(req, res, next){
         country: req.body?.country,
         state: 1,
       }
-
-      console.log('data', data)
-
-      const user_exists = userController.getUserByUsernameEmail(data.username, data.email);
-
-      console.log('user_exists', user_exists)
+ 
+      const user_exists = userController.checkUserExistsByUsernameEmail(data.username, data.email);
       
       if(user_exists){
         return res.json({
@@ -72,17 +93,21 @@ router.post('/create', function(req, res, next){
 
       const new_user = userController.createUser(data);
 
-      console.log('new_user', new_user);
-
       return res.json({
         'error': 0,
         'user_exists': false,
         'message': 'Usuario creado correctamente',
         'new_user': new_user
       })
+    }else{
+      return res.status(400).json({
+        'error': false,
+        'message': 'Todos los campos son requeridos, favor completar y enviar nuevamente.'
+      });
     }
 
   }catch(e){
+    console.log('e',e)
     return res.status(500).json({
       'error': true,
       'message': user_role === 'development' ? e : 'Ha ocurrido un error.'
