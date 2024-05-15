@@ -10,8 +10,8 @@ const user_role = 'development';
 router.get('/last', function(req, res) {
   try{
     const productCTLR = new productController;
-    console.log('productCTLR', productCTLR.getLastProducts())
-    return productCTLR.getLastProducts();
+    
+    return productCTLR.getLastProducts(req, res);
   }catch(e){
     console.log('e',e)
     return res.status(500).json({
